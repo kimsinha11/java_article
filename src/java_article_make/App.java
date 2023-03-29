@@ -7,54 +7,52 @@ import java_article_make.controller.Controller;
 import java_article_make.controller.MemberController;
 
 public class App {
-	App() {
-	}
 
 	public void start() {
-
 		System.out.println("==프로그램 시작==");
 
 		Scanner sc = new Scanner(System.in);
 
-		MemberController memberController = new MemberController(sc);
 		ArticleController articleController = new ArticleController(sc);
+		MemberController memberController = new MemberController(sc);
+
 		Controller controller = null;
-		
-		memberController.maketestdata();
-		articleController.maketestdata();
+		articleController.makeTestData();
+		memberController.makeTestData();
 
 		while (true) {
-			System.out.printf("명령어 >> ");
-			String command = sc.nextLine().trim();
+			System.out.printf("명령어 ) ");
+			String cmd = sc.nextLine().trim();
 
-			if (command.equals("exit")) {
+			if (cmd.equals("exit")) {
 				break;
 			}
-			String[] commandDiv = command.split(" ");
+			String cmdDiv[] = cmd.split(" ");
 
-			String controllerName = commandDiv[0];
+			String controllerName = cmdDiv[0];
 
-			if (commandDiv.length == 1) {
+			if (cmdDiv.length == 1) {
 				System.out.println("명령어를 확인해주세요.");
 				continue;
 			}
 
-			String actionMethodName = commandDiv[1];
+			String actionMethodName = cmdDiv[1];
 
 			if (controllerName.equals("article")) {
 				controller = articleController;
 			} else if (controllerName.equals("member")) {
 				controller = memberController;
-			} else {
-				System.out.println("존재하지 않는 명령어입니다.");
-				continue;
 			}
 
-			controller.doAction(actionMethodName, command);
-
+			else {
+				System.out.println("명령어가 없습니다.");
+				continue;
+			}
+			
+			controller.doAction(actionMethodName, cmd);
 		}
 		System.out.println("==프로그램 종료==");
-
+		sc.close();
 	}
 
 }
