@@ -1,20 +1,19 @@
 package java_article_make.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import java_article_make.dto.Member;
+import java_article_make.service.MemberService;
 import java_article_make.util.Util;
 
 public class MemberController extends Controller {
-	static List<Member> members;
-	private Scanner sc;
-	private String cmd;
-	private String actionMethodName;
 
+	private Scanner sc;
+	public String cmd;
+	public String actionMethodName;
+	private MemberService memberService;
 	public MemberController(Scanner sc) {
-		members = new ArrayList<>();
+		memberService = new MemberService();
 		this.sc = sc;
 	}
 
@@ -81,7 +80,7 @@ public class MemberController extends Controller {
 		name = sc.nextLine();
 
 		Member member = new Member(id, regDate, updateDate, loginId, loginPw, name);
-		members.add(member);
+		memberService.add(member);
 
 		System.out.printf("%s님 회원가입 성공\n", name);
 
@@ -133,18 +132,18 @@ public class MemberController extends Controller {
 	}
 
 	public void makeTestData() {
-		members.add(new Member(1, Util.getNowDateStr(), "", "a", "a", "user1"));
-		members.add(new Member(2, Util.getNowDateStr(), "", "b", "b", "user2"));
-		members.add(new Member(3, Util.getNowDateStr(), "", "c", "c", "user3"));
+		memberService.add(new Member(1, Util.getNowDateStr(), "", "a", "a", "user1"));
+		memberService.add(new Member(2, Util.getNowDateStr(), "", "b", "b", "user2"));
+		memberService.add(new Member(3, Util.getNowDateStr(), "", "c", "c", "user3"));
 
 	}
 
 	public Member getMemberById(String loginId) {
-		for (int i = 0; i < members.size(); i++) {
-			Member member = members.get(i);
+		for (int i = 0; i < memberService.size(); i++) {
+			Member member = memberService.get(i);
 
 			if (member.logiId.equals(loginId)) {
-				return members.get(i);
+				return memberService.get(i);
 			}
 		}
 		return null;

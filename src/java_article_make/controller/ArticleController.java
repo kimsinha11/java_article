@@ -1,20 +1,24 @@
 package java_article_make.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import java_article_make.dto.Article;
+import java_article_make.dto.Member;
+import java_article_make.service.ArticleService;
+import java_article_make.service.MemberService;
 import java_article_make.util.Util;
 
 public class ArticleController extends Controller{
-	static List<Article> articles;
+
 	private Scanner sc;
 	private String cmd;
-	private String actionMethodName;
+	public String actionMethodName;
+	private ArticleService articleService;
+	private MemberService memberServcie;
 	
 	public ArticleController(Scanner sc) {
-		articles = new ArrayList<>();
+		articleService = new ArticleService();
+		memberServcie = new MemberService();
 		this.sc = sc;
 	}
 	
@@ -60,7 +64,7 @@ public class ArticleController extends Controller{
 		String updateDate = "";
 
 		Article article = new Article(id, loginedMember.id, regDate, updateDate, title, body);
-		articles.add(article);
+		articleService.add(article);
 
 		System.out.printf("%d번 글이 작성되었습니다.\n", id);
 		lastArticleId++;
@@ -68,15 +72,22 @@ public class ArticleController extends Controller{
 	}
 
 	public void showList() {
-		if (articles.size() == 0) {
+		if (articleService.size() == 0) {
 			System.out.println("게시물이 없습니다.");
 		} else {
 			System.out.printf("번호 / 작성자 / 제목 / 작성날짜 / 조회수\n");
 
-			for (int i = articles.size() - 1; i >= 0; i--) {
-				Article article = articles.get(i);
+			for (int i = articleService.size() - 1; i >= 0; i--) {
+				Article article = articleService.get(i);
+				String wrtier = null;
+				
+				for(int j = 0; j<memberServcie.size(); j++) {
+					Member member = memberServcie.get(j);
+					if(article.memberId==member.id)
+					wrtier = member.name;
+				}
 
-				System.out.printf("%d / %d / %s / %s / %d \n", article.id, article.memberId, article.title,
+				System.out.printf("%d / %s / %s / %s / %d \n", article.id, wrtier, article.title,
 						article.regDate, article.hit);
 			}
 		}
@@ -92,9 +103,16 @@ public class ArticleController extends Controller{
 			System.out.printf("%d번 게시물은 없습니다.\n", id);
 			return;
 		} else {
+			String wrtier = null;
+			
+			for(int j = 0; j<memberServcie.size(); j++) {
+				Member member = memberServcie.get(j);
+				if(foundArticle.memberId==member.id)
+				wrtier = member.name;
+			}
 			foundArticle.hitup();
-			System.out.printf("번호 : %d\n작성자 : %d\n제목 : %s\n내용 : %s\n작성날짜 : %s\n수정날짜 : %s\n조회수 : %d\n",
-					foundArticle.id, foundArticle.memberId, foundArticle.title, foundArticle.body,
+			System.out.printf("번호 : %d\n작성자 : %s\n제목 : %s\n내용 : %s\n작성날짜 : %s\n수정날짜 : %s\n조회수 : %d\n",
+					foundArticle.id, wrtier, foundArticle.title, foundArticle.body,
 					foundArticle.regDate, foundArticle.updateDate, foundArticle.hit);
 		}
 		
@@ -113,7 +131,7 @@ public class ArticleController extends Controller{
 			System.out.printf("%d번 게시물은 없습니다.\n", id);
 			return;
 		} else if (loginedMember.id == foundArticle.memberId) {
-			articles.remove(foundArticle);
+			articleService.remove(foundArticle);
 			System.out.printf("%d번 글이 삭제되었습니다.\n", id);
 		} else {
 			System.out.println("권한이 없습니다.");
@@ -153,8 +171,8 @@ public class ArticleController extends Controller{
 		
 	}
 	public Article getArticleById(int id) {
-		for (int i = 0; i < articles.size(); i++) {
-			Article article = articles.get(i);
+		for (int i = 0; i < articleService.size(); i++) {
+			Article article = articleService.get(i);
 
 			if (article.id == id) {
 				return article;
@@ -164,9 +182,9 @@ public class ArticleController extends Controller{
 	}
 	
 	public void makeTestData() {
-		articles.add(new Article(1, 1, Util.getNowDateStr(), "", "제목1", "내용1", 11));
-		articles.add(new Article(2, 2, Util.getNowDateStr(), "", "제목2", "내용2", 22));
-		articles.add(new Article(3, 3, Util.getNowDateStr(), "", "제목3", "내용3", 33));
+		articleService.add(new Article(1, 1, Util.getNowDateStr(), "", "제목1", "내용1", 11));
+		articleService.add(new Article(2, 2, Util.getNowDateStr(), "", "제목2", "내용2", 22));
+		articleService.add(new Article(3, 3, Util.getNowDateStr(), "", "제목3", "내용3", 33));
 
 	}
 	
