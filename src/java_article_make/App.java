@@ -9,50 +9,78 @@ import java_article_make.controller.MemberController;
 public class App {
 
 	public void start() {
+
 		System.out.println("==프로그램 시작==");
 
 		Scanner sc = new Scanner(System.in);
-
-		ArticleController articleController = new ArticleController(sc);
 		MemberController memberController = new MemberController(sc);
-
-		Controller controller = null;
-		articleController.makeTestData();
+		ArticleController articleController = new ArticleController(sc);
+		
+		Controller controller;
+		
+		articleController.maketestdata();
 		memberController.makeTestData();
 
 		while (true) {
-			System.out.printf("명령어 ) ");
-			String cmd = sc.nextLine().trim();
+			System.out.printf("명령어 >> ");
+			String command = sc.nextLine().trim();
 
-			if (cmd.equals("exit")) {
+			if (command.equals("exit")) {
 				break;
 			}
-			String cmdDiv[] = cmd.split(" ");
-
-			String controllerName = cmdDiv[0];
-
-			if (cmdDiv.length == 1) {
+			
+			String[] commandDiv = command.split(" ");
+			
+			String controllerName = commandDiv[0];
+			
+			if(commandDiv.length == 1) {
 				System.out.println("명령어를 확인해주세요.");
 				continue;
 			}
-
-			String actionMethodName = cmdDiv[1];
-
-			if (controllerName.equals("article")) {
+			
+			String actionMethodName = commandDiv[1];
+			
+			String forLoginCheck = controllerName + "/" + actionMethodName;
+			
+			controller = null;
+			
+			if(controllerName.equals("article")) {
 				controller = articleController;
-			} else if (controllerName.equals("member")) {
+			} else if(controllerName.equals("member")) {
 				controller = memberController;
-			}
-
-			else {
-				System.out.println("명령어가 없습니다.");
+			} else {
+				System.out.println("존재하지 않는 명령어입니다.");
 				continue;
 			}
 			
-			controller.doAction(actionMethodName, cmd);
+			switch(forLoginCheck) {
+			case "article/write":
+			case "article/modify":
+			case "article/delete":
+			case "member/logout":
+			case "member/profile":
+				if(Controller.isLogined() == false) {
+					System.out.println("로그인 후 이용해주세요.");
+					continue;
+				}
+				break;
+			}
+			switch(forLoginCheck) {
+			case "member/login":
+			case "member/join":
+				if(Controller.isLogined()) {
+					System.out.println("로그아웃 후 이용해주세요.");
+					continue;
+				}
+				break;
+			}
+			
+			controller.doAction(actionMethodName, command);
+
 		}
 		System.out.println("==프로그램 종료==");
-		sc.close();
 	}
+
+
 
 }

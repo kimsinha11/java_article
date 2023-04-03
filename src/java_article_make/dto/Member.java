@@ -1,8 +1,7 @@
 package java_article_make.dto;
 
 public class Member extends Dto {
-
-	public String logiId;
+	public String loginId;
 	public String loginPw;
 	public String name;
 
@@ -10,7 +9,7 @@ public class Member extends Dto {
 		this.id = id;
 		this.regDate = regDate;
 		this.updateDate = updateDate;
-		this.logiId = loginId;
+		this.loginId = loginId;
 		this.loginPw = loginPw;
 		this.name = name;
 	}

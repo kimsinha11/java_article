@@ -5,8 +5,8 @@ import java.util.List;
 
 import java_article_make.dto.Article;
 
-public class ArticleDao {
-	public static List<Article> articles;
+public class ArticleDao extends Dao {
+	public List<Article> articles;
 
 	public ArticleDao() {
 		articles = new ArrayList<>();
@@ -14,21 +14,59 @@ public class ArticleDao {
 
 	public void add(Article article) {
 		articles.add(article);
-		
-	}
-
-	public int size() {
-		// TODO Auto-generated method stub
-		return articles.size();
-	}
-
-	public Article get(int i) {
-		// TODO Auto-generated method stub
-		return articles.get(i);
+		lastId++;
 	}
 
 	public void remove(Article foundArticle) {
 		articles.remove(foundArticle);
-		
 	}
+
+	public int getLastId() {
+		return lastId;
+	}
+
+	public int setNewId() {
+		return lastId + 1;
+	}
+
+	public int getArticleIndexById(int id) {
+		int i = 0;
+		for (Article article : articles) {
+			if (article.id == id) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+
+	public Article getArticleById(int id) {
+		int index = getArticleIndexById(id);
+
+		if (index != -1) {
+			return articles.get(index);
+		}
+
+		return null;
+	}
+
+	public List<Article> getArticles(String searchKeyword) {
+		if (searchKeyword != null && searchKeyword.length() != 0) {
+			System.out.println("searchKeyword : " + searchKeyword);
+
+			List<Article> forPrintArticles = new ArrayList<>();
+
+			if (searchKeyword.length() > 0) {
+				for (Article article : articles) {
+					if (article.title.contains(searchKeyword)) {
+						forPrintArticles.add(article);
+					}
+				}
+			}
+
+			return forPrintArticles;
+		}
+		return articles;
+	}
+
 }
